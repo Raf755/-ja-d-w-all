@@ -1,221 +1,200 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html><html>
 <head>
-  <meta charset="UTF-8">
-  <title>Aplikasi Jadwal & PR</title>
+  <title>Aplikasi Pelajar</title>
   <style>
-    body {
-      font-family: sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      text-align: center;
-      padding: 20px;
-      background-color: #4CAF50;
-      color: white;
-    }
-    .container {
-      padding: 20px;
-    }
-    input, select, button {
-      margin: 5px 0;
-      padding: 5px;
-      width: 100%;
-    }
-    .item {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin: 5px 0;
-      border-radius: 5px;
-    }
-    .item small {
-      color: gray;
-    }
-    nav {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      display: flex;
-      background-color: #eee;
-      border-top: 1px solid #ccc;
-    }
-    nav button {
-      flex: 1;
-      padding: 15px;
-      border: none;
-      background: none;
-      font-size: 16px;
-    }
-    nav button.active {
-      background-color: #ddd;
-      font-weight: bold;
-    }
-    section {
-      display: none;
-    }
-    section.active {
-      display: block;
-    }
-    #login {
-      max-width: 400px;
-      margin: 100px auto;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-    }
+    body { font-family: sans-serif; margin: 0; padding: 0; }
+    .menu { position: fixed; bottom: 0; width: 100%; display: flex; background: #eee; border-top: 1px solid #ccc; }
+    .menu button { flex: 1; padding: 10px; border: none; background: #eee; font-weight: bold; }
+    .menu button.active { background: #ccc; }
+    .container { padding: 10px; margin-bottom: 60px; }
+    .hidden { display: none; }
+    .item { padding: 5px; border-bottom: 1px solid #ccc; }
   </style>
 </head>
 <body>
-  <div id="login">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <p id="login-error" style="color:red;"></p>
-  </div>  <div id="app" style="display:none;">
-    <header>
-      <h1>Aplikasi Jadwal & PR</h1>
-    </header><div class="container">
-  <section id="menu-input" class="active">
-    <h2>Tambah Jadwal Pelajaran</h2>
-    <input id="jadwal-hari" placeholder="Hari (contoh: Senin)">
-    <input id="jadwal-mapel" placeholder="Mata Pelajaran">
-    <button onclick="tambahJadwal()">Tambah Jadwal</button>
+<div id="login-container">
+  <h2>Login</h2>
+  <input type="text" id="username" placeholder="Username"><br>
+  <input type="password" id="password" placeholder="Password"><br>
+  <button onclick="login()">Login</button>
+</div><div id="app" class="hidden">
+  <div class="container">
+    <div id="input" class="tab">
+      <h3>Tambah Jadwal</h3>
+      <input type="text" id="hari" placeholder="Hari">
+      <input type="text" id="pelajaran" placeholder="Pelajaran">
+      <button onclick="tambahJadwal()">Tambah</button><h3>Tambah PR</h3>
+  <input type="text" id="mapel-pr" placeholder="Mapel">
+  <input type="text" id="tugas" placeholder="Tugas">
+  <input type="date" id="tanggal-pr">
+  <button onclick="tambahPR()">Tambah PR</button>
 
-    <h2>Tambah PR</h2>
-    <input id="pr-mapel" placeholder="Mata Pelajaran">
-    <input id="pr-tugas" placeholder="Tugas">
-    <input id="pr-tanggal" type="date">
-    <button onclick="tambahPR()">Tambah PR</button>
-  </section>
+  <h3>Input Seragam</h3>
+  <input type="text" id="hari-seragam" placeholder="Hari">
+  <input type="text" id="jenis-seragam" placeholder="Jenis Seragam">
+  <button onclick="tambahSeragam()">Tambah Seragam</button>
 
-  <section id="menu-jadwal">
-    <h2>Jadwal Pelajaran</h2>
-    <div id="jadwal-list"></div>
-  </section>
-
-  <section id="menu-pr">
-    <h2>Daftar PR</h2>
-    <div id="pr-list"></div>
-  </section>
+  <h3>Input Kegiatan</h3>
+  <input type="text" id="nama-kegiatan" placeholder="Nama Kegiatan">
+  <input type="date" id="tanggal-kegiatan">
+  <button onclick="tambahKegiatan()">Tambah Kegiatan</button>
 </div>
 
-<nav>
-  <button onclick="tampilkanMenu('menu-input')" class="active">Input</button>
-  <button onclick="tampilkanMenu('menu-jadwal')">Jadwal</button>
-  <button onclick="tampilkanMenu('menu-pr')">PR</button>
-</nav>
+<div id="jadwal" class="tab hidden">
+  <h3>Jadwal Pelajaran</h3>
+  <div id="jadwal-list"></div>
+</div>
 
-  </div>  <script>
-    const USERNAME = "Rafkha";
-    const PASSWORD = "Rafkha40";
+<div id="pr" class="tab hidden">
+  <h3>Daftar PR</h3>
+  <div id="pr-list"></div>
+  <h4>Rekap</h4>
+  <div id="rekap"></div>
+</div>
 
-    function login() {
-      const user = document.getElementById("username").value;
-      const pass = document.getElementById("password").value;
-      if (user === USERNAME && pass === PASSWORD) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("app").style.display = "block";
-        tampilkanJadwal();
-        tampilkanPR();
-      } else {
-        document.getElementById("login-error").innerText = "Username atau password salah!";
-      }
-    }
+<div id="seragam" class="tab hidden">
+  <h3>Seragam</h3>
+  <div id="seragam-list"></div>
+</div>
 
-    let jadwal = JSON.parse(localStorage.getItem('jadwal')) || [];
-    let prList = JSON.parse(localStorage.getItem('prList')) || [];
+<div id="kegiatan" class="tab hidden">
+  <h3>Informasi Kegiatan</h3>
+  <div id="kegiatan-list"></div>
+</div>
 
-    function simpanData() {
-      localStorage.setItem('jadwal', JSON.stringify(jadwal));
-      localStorage.setItem('prList', JSON.stringify(prList));
-    }
+  </div>  <div class="menu">
+    <button onclick="bukaTab('input')" class="active">Input</button>
+    <button onclick="bukaTab('jadwal')">Jadwal</button>
+    <button onclick="bukaTab('pr')">PR</button>
+    <button onclick="bukaTab('seragam')">Seragam</button>
+    <button onclick="bukaTab('kegiatan')">Kegiatan</button>
+  </div>
+</div><script>
+const usernameBenar = "Rafkha";
+const passwordBenar = "Rafkha40";
 
-    function tampilkanMenu(id) {
-      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-      if (id === 'menu-jadwal') tampilkanJadwal();
-      if (id === 'menu-pr') tampilkanPR();
-    }
+function login() {
+  const u = document.getElementById("username").value;
+  const p = document.getElementById("password").value;
+  if (u === usernameBenar && p === passwordBenar) {
+    document.getElementById("login-container").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    tampilkanSemua();
+  } else {
+    alert("Login salah");
+  }
+}
 
-    function tampilkanJadwal() {
-      const list = document.getElementById("jadwal-list");
-      list.innerHTML = "";
-      jadwal.forEach((j, i) => {
-        list.innerHTML += `<div class='item'>${j.hari} - ${j.mapel} 
-          <button onclick='editJadwal(${i})'>Edit</button> 
-          <button onclick='hapusJadwal(${i})'>Hapus</button></div>`;
-      });
-    }
+function bukaTab(tab) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.add("hidden"));
+  document.getElementById(tab).classList.remove("hidden");
+  document.querySelectorAll(".menu button").forEach(b => b.classList.remove("active"));
+  event.target.classList.add("active");
+}
 
-    function tampilkanPR() {
-      const list = document.getElementById("pr-list");
-      list.innerHTML = "";
-      const today = new Date().toISOString().split("T")[0];
-      const sorted = prList
-        .filter(p => p.tanggal >= today)
-        .sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
-      sorted.forEach((p, i) => {
-        const status = p.selesai ? "<strong>(Sudah dikerjakan)</strong>" : "";
-        list.innerHTML += `<div class='item'>${p.mapel}: ${p.tugas} ${status}<br><small>Deadline: ${p.tanggal}</small> 
-          <button onclick='centangPR(${i})'>✓</button>
-          <button onclick='hapusPR(${i})'>Hapus</button></div>`;
-      });
-    }
+let jadwalList = JSON.parse(localStorage.getItem("jadwalList")) || [];
+let prList = JSON.parse(localStorage.getItem("prList")) || [];
+let seragamList = JSON.parse(localStorage.getItem("seragamList")) || [];
+let kegiatanList = JSON.parse(localStorage.getItem("kegiatanList")) || [];
+let rekap = JSON.parse(localStorage.getItem("rekap")) || { dikerjakan: 0, tidak: 0 };
 
-    function tambahJadwal() {
-      const hari = document.getElementById("jadwal-hari").value;
-      const mapel = document.getElementById("jadwal-mapel").value;
-      if (hari && mapel) {
-        jadwal.push({ hari, mapel });
-        simpanData();
-        document.getElementById("jadwal-hari").value = "";
-        document.getElementById("jadwal-mapel").value = "";
-      }
-    }
+function simpan() {
+  localStorage.setItem("jadwalList", JSON.stringify(jadwalList));
+  localStorage.setItem("prList", JSON.stringify(prList));
+  localStorage.setItem("seragamList", JSON.stringify(seragamList));
+  localStorage.setItem("kegiatanList", JSON.stringify(kegiatanList));
+  localStorage.setItem("rekap", JSON.stringify(rekap));
+}
 
-    function hapusJadwal(index) {
-      jadwal.splice(index, 1);
-      simpanData();
-      tampilkanJadwal();
-    }
+function tambahJadwal() {
+  jadwalList.push({ hari: hari.value, pelajaran: pelajaran.value });
+  simpan(); tampilkanJadwal();
+}
 
-    function editJadwal(index) {
-      const j = jadwal[index];
-      const newHari = prompt("Ubah Hari:", j.hari);
-      const newMapel = prompt("Ubah Mapel:", j.mapel);
-      if (newHari && newMapel) {
-        jadwal[index] = { hari: newHari, mapel: newMapel };
-        simpanData();
-        tampilkanJadwal();
-      }
-    }
+function editJadwal(i) {
+  const j = jadwalList[i];
+  const hariBaru = prompt("Edit Hari", j.hari);
+  const pelajaranBaru = prompt("Edit Pelajaran", j.pelajaran);
+  if (hariBaru && pelajaranBaru) {
+    jadwalList[i] = { hari: hariBaru, pelajaran: pelajaranBaru };
+    simpan(); tampilkanJadwal();
+  }
+}
 
-    function tambahPR() {
-      const mapel = document.getElementById("pr-mapel").value;
-      const tugas = document.getElementById("pr-tugas").value;
-      const tanggal = document.getElementById("pr-tanggal").value;
-      if (mapel && tugas && tanggal) {
-        prList.push({ mapel, tugas, tanggal, selesai: false });
-        simpanData();
-        document.getElementById("pr-mapel").value = "";
-        document.getElementById("pr-tugas").value = "";
-        document.getElementById("pr-tanggal").value = "";
-      }
-    }
+function hapusJadwal(i) {
+  jadwalList.splice(i, 1);
+  simpan(); tampilkanJadwal();
+}
 
-    function hapusPR(index) {
-      prList.splice(index, 1);
-      simpanData();
-      tampilkanPR();
-    }
+function tampilkanJadwal() {
+  const list = document.getElementById("jadwal-list");
+  list.innerHTML = "";
+  jadwalList.forEach((j, i) => {
+    list.innerHTML += `<div class='item'>${j.hari}: ${j.pelajaran}
+      <button onclick='editJadwal(${i})'>Edit</button>
+      <button onclick='hapusJadwal(${i})'>Hapus</button></div>`;
+  });
+}
 
-    function centangPR(index) {
-      prList[index].selesai = true;
-      simpanData();
-      tampilkanPR();
-    }
-  </script></body>
+function tambahPR() {
+  prList.push({ mapel: mapel_pr.value, tugas: tugas.value, tanggal: tanggal_pr.value, selesai: false });
+  simpan(); tampilkanPR();
+}
+
+function hapusPR(i) {
+  prList.splice(i, 1);
+  simpan(); tampilkanPR();
+}
+
+function centangPR(i) {
+  if (!prList[i].selesai) rekap.dikerjakan++;
+  prList[i].selesai = true;
+  simpan(); tampilkanPR();
+}
+
+function tampilkanPR() {
+  const list = document.getElementById("pr-list");
+  list.innerHTML = "";
+  const today = new Date().toISOString().split("T")[0];
+  const sorted = prList.filter(p => p.tanggal >= today)
+    .sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+  sorted.forEach((p, i) => {
+    const status = p.selesai ? "<strong>(Sudah dikerjakan)</strong>" : "";
+    list.innerHTML += `<div class='item'>${p.mapel}: ${p.tugas} ${status}<br><small>Deadline: ${p.tanggal}</small>
+      <button onclick='centangPR(${i})'>✓</button>
+      <button onclick='hapusPR(${i})'>Hapus</button></div>`;
+  });
+  document.getElementById("rekap").innerHTML = `✅ Dikerjakan: ${rekap.dikerjakan}`;
+}
+
+function tambahSeragam() {
+  seragamList.push({ hari: hari_seragam.value, jenis: jenis_seragam.value });
+  simpan(); tampilkanSeragam();
+}
+
+function tampilkanSeragam() {
+  const list = document.getElementById("seragam-list");
+  list.innerHTML = "";
+  seragamList.forEach(s => {
+    list.innerHTML += `<div class='item'>${s.hari}: ${s.jenis}</div>`;
+  });
+}
+
+function tambahKegiatan() {
+  kegiatanList.push({ nama: nama_kegiatan.value, tanggal: tanggal_kegiatan.value });
+  simpan(); tampilkanKegiatan();
+}
+
+function tampilkanKegiatan() {
+  const list = document.getElementById("kegiatan-list");
+  list.innerHTML = "";
+  kegiatanList.forEach(k => {
+    list.innerHTML += `<div class='item'>${k.tanggal}: ${k.nama}</div>`;
+  });
+}
+
+function tampilkanSemua() {
+  tampilkanJadwal(); tampilkanPR(); tampilkanSeragam(); tampilkanKegiatan();
+}
+</script></body>
 </html>
