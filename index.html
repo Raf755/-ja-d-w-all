@@ -4,78 +4,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aplikasi Pelajar</title>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background-color: #f2f2f2;
-    }
-    .login-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: linear-gradient(135deg, #38b000, #70e000);
-      padding: 20px;
-    }
-    .login-box {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      width: 100%;
-      max-width: 400px;
-    }
-    input, button, select {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      background-color: #38b000;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    #app {
-      display: none;
-      padding: 10px;
-    }
-    nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      background-color: #38b000;
-      padding: 10px 0;
-    }
-    nav button {
-      flex: 1;
-      padding: 10px;
-      color: white;
-      background: none;
-      border: none;
-      font-weight: bold;
-    }
-    .section {
-      display: none;
-    }
-    .visible {
-      display: block;
-    }
-    .done {
-      text-decoration: line-through;
-      color: gray;
-    }
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body, html { margin: 0; padding: 0; height: 100%; background-color: #f2f2f2; }
+    .login-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #38b000, #70e000); padding: 20px; }
+    .login-box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); width: 100%; max-width: 400px; }
+    input, button, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+    button { background-color: #38b000; color: white; border: none; cursor: pointer; }
+    #app { display: none; padding: 10px; }
+    .tab { display: none; }
+    .active-tab { display: block; }
+    .menu-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); }
+    .menu-bar button { flex: 1; padding: 15px; border: none; background: none; }
+    .done { text-decoration: line-through; color: green; }
   </style>
 </head>
 <body>
@@ -88,56 +28,56 @@
       <p id="loginError" style="color:red;text-align:center;display:none;">Username atau password salah</p>
     </div>
   </div>  <div id="app">
-    <div id="input" class="section visible">
-      <h3>Input Data</h3>
+    <div id="formTab" class="tab active-tab">
+      <h2>Tambah Jadwal</h2>
       <input type="text" id="mapel" placeholder="Mata Pelajaran" />
       <input type="text" id="hari" placeholder="Hari" />
-      <button onclick="tambahJadwal()">Tambah Jadwal</button><input type="text" id="judulPR" placeholder="Judul PR" />
+      <button onclick="tambahJadwal()">Tambah Jadwal</button><h2>Tambah PR</h2>
+  <input type="text" id="judulPR" placeholder="Judul PR" />
+  <input type="text" id="mapelPR" placeholder="Mata Pelajaran" />
   <input type="date" id="tanggalPR" />
   <button onclick="tambahPR()">Tambah PR</button>
 
-  <input type="text" id="hariSeragam" placeholder="Hari Seragam" />
-  <input type="text" id="jenisSeragam" placeholder="Jenis Seragam" />
+  <h2>Tambah Seragam</h2>
+  <input type="text" id="seragamHari" placeholder="Hari" />
+  <input type="text" id="seragamJenis" placeholder="Jenis Seragam" />
   <button onclick="tambahSeragam()">Tambah Seragam</button>
 
-  <input type="text" id="judulKegiatan" placeholder="Judul Kegiatan" />
+  <h2>Tambah Kegiatan</h2>
+  <input type="text" id="namaKegiatan" placeholder="Nama Kegiatan" />
+  <input type="text" id="isiKegiatan" placeholder="Isi Kegiatan" />
   <input type="date" id="tanggalKegiatan" />
   <button onclick="tambahKegiatan()">Tambah Kegiatan</button>
 </div>
 
-<div id="jadwal" class="section">
-  <h3>Jadwal Pelajaran</h3>
-  <ul id="daftarJadwal"></ul>
+<div id="jadwalTab" class="tab">
+  <h2>Jadwal Pelajaran</h2>
+  <ul id="jadwalList"></ul>
 </div>
 
-<div id="pr" class="section">
-  <h3>Daftar PR</h3>
-  <ul id="daftarPR"></ul>
+<div id="prTab" class="tab">
+  <h2>Daftar PR</h2>
+  <ul id="prList"></ul>
+  <p id="rekapPR"></p>
 </div>
 
-<div id="seragam" class="section">
-  <h3>Seragam</h3>
-  <ul id="daftarSeragam"></ul>
+<div id="seragamTab" class="tab">
+  <h2>Daftar Seragam</h2>
+  <ul id="seragamList"></ul>
 </div>
 
-<div id="kegiatan" class="section">
-  <h3>Kegiatan</h3>
-  <ul id="daftarKegiatan"></ul>
+<div id="kegiatanTab" class="tab">
+  <h2>Daftar Kegiatan</h2>
+  <ul id="kegiatanList"></ul>
 </div>
 
-<div id="rekap" class="section">
-  <h3>Rekap PR</h3>
-  <p id="rekapText"></p>
+<div class="menu-bar">
+  <button onclick="showTab('formTab')">➕</button>
+  <button onclick="showTab('jadwalTab')">📘</button>
+  <button onclick="showTab('prTab')">📝</button>
+  <button onclick="showTab('seragamTab')">👕</button>
+  <button onclick="showTab('kegiatanTab')">📆</button>
 </div>
-
-<nav>
-  <button onclick="showSection('input')">Input</button>
-  <button onclick="showSection('jadwal')">Jadwal</button>
-  <button onclick="showSection('pr')">PR</button>
-  <button onclick="showSection('seragam')">Seragam</button>
-  <button onclick="showSection('kegiatan')">Kegiatan</button>
-  <button onclick="showSection('rekap')">Rekap</button>
-</nav>
 
   </div>  <script>
     function checkLogin() {
@@ -146,131 +86,133 @@
       if (username === 'Rafkha' && password === 'Rafkha40') {
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('app').style.display = 'block';
-        loadSemua();
+        renderSemua();
       } else {
         document.getElementById('loginError').style.display = 'block';
       }
     }
 
-    function showSection(id) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
-      document.getElementById(id).classList.add('visible');
+    function showTab(tabId) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active-tab'));
+      document.getElementById(tabId).classList.add('active-tab');
+    }
+
+    let jadwal = JSON.parse(localStorage.getItem('jadwal')) || [];
+    let pr = JSON.parse(localStorage.getItem('pr')) || [];
+    let seragam = JSON.parse(localStorage.getItem('seragam')) || [];
+    let kegiatan = JSON.parse(localStorage.getItem('kegiatan')) || [];
+
+    function simpan() {
+      localStorage.setItem('jadwal', JSON.stringify(jadwal));
+      localStorage.setItem('pr', JSON.stringify(pr));
+      localStorage.setItem('seragam', JSON.stringify(seragam));
+      localStorage.setItem('kegiatan', JSON.stringify(kegiatan));
     }
 
     function tambahJadwal() {
       const mapel = document.getElementById('mapel').value;
       const hari = document.getElementById('hari').value;
-      if (!mapel || !hari) return;
-      const data = JSON.parse(localStorage.getItem('jadwal') || '[]');
-      data.push({mapel, hari});
-      localStorage.setItem('jadwal', JSON.stringify(data));
-      document.getElementById('mapel').value = '';
-      document.getElementById('hari').value = '';
-      loadJadwal();
-    }
-
-    function loadJadwal() {
-      const data = JSON.parse(localStorage.getItem('jadwal') || '[]');
-      const ul = document.getElementById('daftarJadwal');
-      ul.innerHTML = '';
-      data.forEach((item, i) => {
-        const li = document.createElement('li');
-        li.textContent = `${item.hari}: ${item.mapel}`;
-        ul.appendChild(li);
-      });
+      if (mapel && hari) {
+        jadwal.push({ mapel, hari });
+        simpan();
+        renderJadwal();
+      }
     }
 
     function tambahPR() {
       const judul = document.getElementById('judulPR').value;
+      const mapel = document.getElementById('mapelPR').value;
       const tanggal = document.getElementById('tanggalPR').value;
-      if (!judul || !tanggal) return;
-      const data = JSON.parse(localStorage.getItem('pr') || '[]');
-      data.push({judul, tanggal, selesai: false});
-      localStorage.setItem('pr', JSON.stringify(data));
-      document.getElementById('judulPR').value = '';
-      document.getElementById('tanggalPR').value = '';
-      loadPR();
-    }
-
-    function loadPR() {
-      const data = JSON.parse(localStorage.getItem('pr') || '[]');
-      const now = new Date();
-      let selesai = 0, gagal = 0;
-      const ul = document.getElementById('daftarPR');
-      ul.innerHTML = '';
-      data
-        .filter(d => new Date(d.tanggal) >= now || d.selesai)
-        .sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal))
-        .forEach((item, i) => {
-          const li = document.createElement('li');
-          li.innerHTML = `${item.judul} - ${item.tanggal} ${item.selesai ? '<span class="done">(Sudah dikerjakan)</span>' : ''} <button onclick="centangPR(${i})">✔️</button>`;
-          ul.appendChild(li);
-        });
-      data.forEach(p => {
-        if (p.selesai) selesai++;
-        else if (new Date(p.tanggal) < now) gagal++;
-      });
-      document.getElementById('rekapText').innerText = `Dikerjakan: ${selesai} kali | Tidak dikerjakan: ${gagal} kali`;
-    }
-
-    function centangPR(index) {
-      const data = JSON.parse(localStorage.getItem('pr') || '[]');
-      data[index].selesai = true;
-      localStorage.setItem('pr', JSON.stringify(data));
-      loadPR();
+      if (judul && mapel && tanggal) {
+        pr.push({ judul, mapel, tanggal, dikerjakan: false });
+        simpan();
+        renderPR();
+      }
     }
 
     function tambahSeragam() {
-      const hari = document.getElementById('hariSeragam').value;
-      const jenis = document.getElementById('jenisSeragam').value;
-      if (!hari || !jenis) return;
-      const data = JSON.parse(localStorage.getItem('seragam') || '[]');
-      data.push({hari, jenis});
-      localStorage.setItem('seragam', JSON.stringify(data));
-      document.getElementById('hariSeragam').value = '';
-      document.getElementById('jenisSeragam').value = '';
-      loadSeragam();
-    }
-
-    function loadSeragam() {
-      const data = JSON.parse(localStorage.getItem('seragam') || '[]');
-      const ul = document.getElementById('daftarSeragam');
-      ul.innerHTML = '';
-      data.forEach((item) => {
-        const li = document.createElement('li');
-        li.textContent = `${item.hari}: ${item.jenis}`;
-        ul.appendChild(li);
-      });
+      const hari = document.getElementById('seragamHari').value;
+      const jenis = document.getElementById('seragamJenis').value;
+      if (hari && jenis) {
+        seragam.push({ hari, jenis });
+        simpan();
+        renderSeragam();
+      }
     }
 
     function tambahKegiatan() {
-      const judul = document.getElementById('judulKegiatan').value;
+      const nama = document.getElementById('namaKegiatan').value;
+      const isi = document.getElementById('isiKegiatan').value;
       const tanggal = document.getElementById('tanggalKegiatan').value;
-      if (!judul || !tanggal) return;
-      const data = JSON.parse(localStorage.getItem('kegiatan') || '[]');
-      data.push({judul, tanggal});
-      localStorage.setItem('kegiatan', JSON.stringify(data));
-      document.getElementById('judulKegiatan').value = '';
-      document.getElementById('tanggalKegiatan').value = '';
-      loadKegiatan();
+      if (nama && isi && tanggal) {
+        kegiatan.push({ nama, isi, tanggal });
+        simpan();
+        renderKegiatan();
+      }
     }
 
-    function loadKegiatan() {
-      const data = JSON.parse(localStorage.getItem('kegiatan') || '[]');
-      const ul = document.getElementById('daftarKegiatan');
-      ul.innerHTML = '';
-      data.forEach((item) => {
+    function renderJadwal() {
+      const list = document.getElementById('jadwalList');
+      list.innerHTML = '';
+      jadwal.forEach((item, index) => {
         const li = document.createElement('li');
-        li.textContent = `${item.tanggal}: ${item.judul}`;
-        ul.appendChild(li);
+        li.textContent = `${item.hari} - ${item.mapel}`;
+        list.appendChild(li);
       });
     }
 
-    function loadSemua() {
-      loadJadwal();
-      loadPR();
-      loadSeragam();
-      loadKegiatan();
+    function renderPR() {
+      const list = document.getElementById('prList');
+      list.innerHTML = '';
+      let total = 0, dikerjakan = 0;
+      const hariIni = new Date().toISOString().split('T')[0];
+      pr = pr.filter(p => p.tanggal >= hariIni);
+      pr.sort((a, b) => a.tanggal.localeCompare(b.tanggal));
+      pr.forEach((item, index) => {
+        total++;
+        const li = document.createElement('li');
+        li.innerHTML = `${item.tanggal} - ${item.mapel}: ${item.judul} <button onclick="centangPR(${index})">✔</button>`;
+        if (item.dikerjakan) {
+          li.classList.add('done');
+          li.innerHTML += ' (Sudah Dikerjakan)';
+          dikerjakan++;
+        }
+        list.appendChild(li);
+      });
+      document.getElementById('rekapPR').textContent = `Dikerjakan: ${dikerjakan}, Tidak: ${total - dikerjakan}`;
+      simpan();
+    }
+
+    function centangPR(index) {
+      pr[index].dikerjakan = true;
+      renderPR();
+    }
+
+    function renderSeragam() {
+      const list = document.getElementById('seragamList');
+      list.innerHTML = '';
+      seragam.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.hari}: ${item.jenis}`;
+        list.appendChild(li);
+      });
+    }
+
+    function renderKegiatan() {
+      const list = document.getElementById('kegiatanList');
+      list.innerHTML = '';
+      kegiatan.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.tanggal} - ${item.nama}: ${item.isi}`;
+        list.appendChild(li);
+      });
+    }
+
+    function renderSemua() {
+      renderJadwal();
+      renderPR();
+      renderSeragam();
+      renderKegiatan();
     }
   </script></body>
 </html>
