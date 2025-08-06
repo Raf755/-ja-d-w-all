@@ -1,114 +1,222 @@
-<!DOCTYPE html><html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aplikasi Pelajar</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f0f0f0;
+<!DOCTYPE html><html lang="id"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pelajar</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c;
+            color: white;
+        }.hidden {
+        display: none;
     }
+
     .container {
-      padding: 20px;
+        padding: 20px;
     }
-    .card {
-      background: white;
-      margin-bottom: 10px;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+    h1, h2 {
+        color: white;
     }
-    .btn {
-      padding: 10px;
-      margin-top: 10px;
-      border: none;
-      background-color: #38b000;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
+
+    input, select, button {
+        display: block;
+        margin: 10px 0;
+        padding: 10px;
+        width: 100%;
+        max-width: 400px;
     }
-    .danger {
-      background-color: red;
+
+    button {
+        background-color: green;
+        color: white;
+        border: none;
+        cursor: pointer;
     }
+
     .menu {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background-color: #fff;
-      display: flex;
-      justify-content: space-around;
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+        margin: 20px 0;
     }
+
     .menu button {
-      flex: 1;
-      padding: 15px;
-      border: none;
-      background: none;
-      font-size: 16px;
-      cursor: pointer;
+        margin-right: 10px;
     }
-    #loginScreen {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
+
+    .card {
+        background-color: #333;
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 8px;
     }
-    #loginScreen form {
-      width: 90%;
-      max-width: 400px;
-      padding: 20px;
-      background: #fff;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      border-radius: 10px;
-    }
-    #loginScreen input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-  </style>
-</head>
-<body>
-<div id="loginScreen">
-  <form onsubmit="return login(event)">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button type="submit" class="btn">Login</button>
-  </form>
+</style>
+
+</head><body>
+    <div id="loginPage" class="container">
+        <h1>Login</h1>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div><div id="menuUtama" class="container hidden">
+    <h1>Menu Utama</h1>
+    <div class="menu">
+        <button onclick="tampilkan('inputData')">Input Data</button>
+        <button onclick="tampilkan('daftarPR')">List PR</button>
+        <button onclick="tampilkan('jadwal')">List Jadwal</button>
+        <button onclick="tampilkan('seragam')">List Seragam</button>
+        <button onclick="tampilkan('kegiatan')">List Kegiatan</button>
+        <button onclick="tampilkan('rekap')">Rekap PR</button>
+    </div>
 </div>
-<div class="container">
-  <div id="content"></div>
+
+<div id="inputData" class="container hidden">
+    <h2>Input PR</h2>
+    <input id="judulPR" placeholder="Judul PR">
+    <input id="mapelPR" placeholder="Mata Pelajaran">
+    <button onclick="simpanPR()">Simpan PR</button>
+
+    <h2>Input Jadwal</h2>
+    <input id="jadwalHari" placeholder="Hari">
+    <input id="jadwalMapel" placeholder="Mata Pelajaran">
+    <button onclick="simpanJadwal()">Simpan Jadwal</button>
+
+    <h2>Input Seragam</h2>
+    <input id="seragamHari" placeholder="Hari">
+    <input id="jenisSeragam" placeholder="Jenis Seragam">
+    <button onclick="simpanSeragam()">Simpan Seragam</button>
+
+    <h2>Input Kegiatan</h2>
+    <input id="judulKegiatan" placeholder="Judul Kegiatan">
+    <input id="isiKegiatan" placeholder="Isi Kegiatan">
+    <button onclick="simpanKegiatan()">Simpan Kegiatan</button>
 </div>
-<div class="menu">
-  <button onclick="showMenu('input')">Input</button>
-  <button onclick="showMenu('pr')">PR</button>
-  <button onclick="showMenu('jadwal')">Jadwal</button>
-  <button onclick="showMenu('seragam')">Seragam</button>
-  <button onclick="showMenu('kegiatan')">Kegiatan</button>
+
+<div id="daftarPR" class="container hidden">
+    <h2>Daftar PR</h2>
+    <div id="listPR"></div>
 </div>
+
+<div id="jadwal" class="container hidden">
+    <h2>Jadwal Pelajaran</h2>
+    <div id="listJadwal"></div>
+</div>
+
+<div id="seragam" class="container hidden">
+    <h2>Seragam</h2>
+    <div id="listSeragam"></div>
+</div>
+
+<div id="kegiatan" class="container hidden">
+    <h2>Kegiatan</h2>
+    <div id="listKegiatan"></div>
+</div>
+
+<div id="rekap" class="container hidden">
+    <h2>Rekap PR</h2>
+    <div id="rekapData"></div>
+</div>
+
 <script>
-let prList = JSON.parse(localStorage.getItem('prList')) || [];
-let jadwalList = JSON.parse(localStorage.getItem('jadwalList')) || [];
-let seragamList = JSON.parse(localStorage.getItem('seragamList')) || [];
-kegiatanList = JSON.parse(localStorage.getItem('kegiatanList')) || [];function simpanSemua() { localStorage.setItem('prList', JSON.stringify(prList)); localStorage.setItem('jadwalList', JSON.stringify(jadwalList)); localStorage.setItem('seragamList', JSON.stringify(seragamList)); localStorage.setItem('kegiatanList', JSON.stringify(kegiatanList)); }
+    const user = 'Rafkha';
+    const pass = 'Rafkha40';
 
-function login(e) { e.preventDefault(); const u = document.getElementById('username').value; const p = document.getElementById('password').value; if (u === 'Rafkha' && p === 'Rafkha40') { document.getElementById('loginScreen').style.display = 'none'; } else { alert('Login gagal'); } }
+    function login() {
+        if (document.getElementById('username').value === user && document.getElementById('password').value === pass) {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('menuUtama').classList.remove('hidden');
+        } else {
+            alert('Login gagal!');
+        }
+    }
 
-function showMenu(menu) { const c = document.getElementById('content'); if (menu === 'input') { c.innerHTML =  <h2>Input Data</h2> <form onsubmit="simpanPR(event)"> <input type="text" id="judulPR" placeholder="Judul PR" required><br> <input type="date" id="tanggalPR" required><br> <input type="text" id="mapelPR" placeholder="Mata Pelajaran" required><br> <button class="btn">Simpan PR</button> </form><br> <form onsubmit="simpanJadwal(event)"> <input type="text" id="hariJadwal" placeholder="Hari Jadwal" required><br> <input type="text" id="mapelJadwal" placeholder="Mata Pelajaran" required><br> <button class="btn">Simpan Jadwal</button> </form><br> <form onsubmit="simpanSeragam(event)"> <input type="text" id="hariSeragam" placeholder="Hari Seragam" required><br> <input type="text" id="warnaSeragam" placeholder="Warna Seragam" required><br> <button class="btn">Simpan Seragam</button> </form><br> <form onsubmit="simpanKegiatan(event)"> <input type="text" id="tanggalKegiatan" placeholder="Tanggal Kegiatan" required><br> <input type="text" id="isiKegiatan" placeholder="Isi Kegiatan" required><br> <button class="btn">Simpan Kegiatan</button> </form>; } else if (menu === 'pr') { renderPR(); } else if (menu === 'jadwal') { c.innerHTML = '<h2>Jadwal</h2>' + jadwalList.map(j => <div class='card'>${j.hari} - ${j.mapel}</div>).join(''); } else if (menu === 'seragam') { c.innerHTML = '<h2>Seragam</h2>' + seragamList.map(s => <div class='card'>${s.hari} - ${s.warna}</div>).join(''); } else if (menu === 'kegiatan') { c.innerHTML = '<h2>Kegiatan</h2>' + kegiatanList.map(k => <div class='card'>${k.tanggal} - ${k.isi}</div>).join(''); } }
+    function tampilkan(id) {
+        const sections = ['menuUtama', 'inputData', 'daftarPR', 'jadwal', 'seragam', 'kegiatan', 'rekap'];
+        sections.forEach(s => document.getElementById(s).classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+    }
 
-function simpanPR(e) { e.preventDefault(); const judul = document.getElementById('judulPR').value; const tanggal = document.getElementById('tanggalPR').value; const mapel = document.getElementById('mapelPR').value; prList.push({judul, tanggal, mapel, selesai: false}); simpanSemua(); alert('PR disimpan'); e.target.reset(); }
+    // PR
+    function simpanPR() {
+        const pr = {judul: judulPR.value, mapel: mapelPR.value};
+        const data = JSON.parse(localStorage.getItem('pr')) || [];
+        data.push(pr);
+        localStorage.setItem('pr', JSON.stringify(data));
+        alert('PR disimpan!');
+    }
 
-function renderPR() { const now = new Date(); const c = document.getElementById('content'); c.innerHTML = '<h2>Daftar PR</h2>' + prList .filter(pr => new Date(pr.tanggal) >= now) .sort((a,b) => new Date(a.tanggal) - new Date(b.tanggal)) .map((pr, i) =>  <div class="card"> <strong>${pr.judul}</strong><br> Mata Pelajaran: ${pr.mapel}<br> Tanggal: ${pr.tanggal}<br> Status: ${pr.selesai ? '<span style="color:green">Sudah dikerjakan</span>' : 'Belum'}<br> <button onclick="tandaiSelesai(${i})" class="btn">Centang</button> </div>).join(''); }
+    function tampilkanPR() {
+        const data = JSON.parse(localStorage.getItem('pr')) || [];
+        listPR.innerHTML = data.map((pr, i) => `
+            <div class="card">
+                <b>${pr.judul}</b> - ${pr.mapel}
+                <button onclick="hapusPR(${i})">Hapus</button>
+            </div>
+        `).join('');
+    }
 
-function tandaiSelesai(i) { prList[i].selesai = true; simpanSemua(); renderPR(); }
+    function hapusPR(i) {
+        const data = JSON.parse(localStorage.getItem('pr')) || [];
+        data.splice(i, 1);
+        localStorage.setItem('pr', JSON.stringify(data));
+        tampilkanPR();
+    }
 
-function simpanJadwal(e) { e.preventDefault(); const hari = document.getElementById('hariJadwal').value; const mapel = document.getElementById('mapelJadwal').value; jadwalList.push({hari, mapel}); simpanSemua(); alert('Jadwal disimpan'); e.target.reset(); } function simpanSeragam(e) { e.preventDefault(); const hari = document.getElementById('hariSeragam').value; const warna = document.getElementById('warnaSeragam').value; seragamList.push({hari, warna}); simpanSemua(); alert('Seragam disimpan'); e.target.reset(); } function simpanKegiatan(e) { e.preventDefault(); const tanggal = document.getElementById('tanggalKegiatan').value; const isi = document.getElementById('isiKegiatan').value; kegiatanList.push({tanggal, isi}); simpanSemua(); alert('Kegiatan disimpan'); e.target.reset(); } </script>
+    // Jadwal
+    function simpanJadwal() {
+        const j = {hari: jadwalHari.value, mapel: jadwalMapel.value};
+        const d = JSON.parse(localStorage.getItem('jadwal')) || [];
+        d.push(j);
+        localStorage.setItem('jadwal', JSON.stringify(d));
+        alert('Jadwal disimpan!');
+    }
 
-</body>
-</html>
+    function tampilkanJadwal() {
+        const d = JSON.parse(localStorage.getItem('jadwal')) || [];
+        listJadwal.innerHTML = d.map(j => `<div class='card'><b>${j.hari}</b>: ${j.mapel}</div>`).join('');
+    }
+
+    // Seragam
+    function simpanSeragam() {
+        const s = {hari: seragamHari.value, jenis: jenisSeragam.value};
+        const d = JSON.parse(localStorage.getItem('seragam')) || [];
+        d.push(s);
+        localStorage.setItem('seragam', JSON.stringify(d));
+        alert('Seragam disimpan!');
+    }
+
+    function tampilkanSeragam() {
+        const d = JSON.parse(localStorage.getItem('seragam')) || [];
+        listSeragam.innerHTML = d.map(s => `<div class='card'><b>${s.hari}</b>: ${s.jenis}</div>`).join('');
+    }
+
+    // Kegiatan
+    function simpanKegiatan() {
+        const k = {judul: judulKegiatan.value, isi: isiKegiatan.value};
+        const d = JSON.parse(localStorage.getItem('kegiatan')) || [];
+        d.push(k);
+        localStorage.setItem('kegiatan', JSON.stringify(d));
+        alert('Kegiatan disimpan!');
+    }
+
+    function tampilkanKegiatan() {
+        const d = JSON.parse(localStorage.getItem('kegiatan')) || [];
+        listKegiatan.innerHTML = d.map(k => `<div class='card'><b>${k.judul}</b>: ${k.isi}</div>`).join('');
+    }
+
+    // Rekap
+    function tampilkanRekap() {
+        const data = JSON.parse(localStorage.getItem('pr')) || [];
+        rekapData.innerHTML = `Total PR: ${data.length}`;
+    }
+
+    // Tampilkan otomatis saat buka
+    window.onload = () => {
+        tampilkanPR();
+        tampilkanJadwal();
+        tampilkanSeragam();
+        tampilkanKegiatan();
+        tampilkanRekap();
+    }
+</script>
+
+</body></html>
