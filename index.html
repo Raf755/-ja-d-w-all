@@ -1,4 +1,4 @@
-<!-- Kode lengkap aplikasi sudah termasuk login, PR, jadwal pelajaran, seragam, kegiatan, dan rekap PR --><!-- Update terakhir: Tambah mata pelajaran di PR dan isi kegiatan --><!-- Update ini: Tambah fitur edit PR, hapus tombol hapus --><!DOCTYPE html><html lang="id">
+<!-- Kode lengkap aplikasi sudah termasuk login, PR, jadwal pelajaran, seragam, kegiatan, dan rekap PR --><!-- Update terakhir: Tambah mata pelajaran di PR dan isi kegiatan --><!-- Update ini: Tambah fitur edit PR, hapus tombol hapus, perbaikan menu --><!DOCTYPE html><html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,29 +29,95 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    .danger {
-      background-color: red;
+    .menu-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #ccc;
     }
+    .menu-bar button {
+      flex: 1;
+      padding: 15px 0;
+      border: none;
+      background: none;
+      font-size: 16px;
+    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Daftar PR</h2>
-    <form id="prForm">
-      <input type="text" id="judulPR" placeholder="Judul PR" required><br>
-      <input type="date" id="tanggalPR" required><br>
-      <input type="text" id="mapelPR" placeholder="Mata Pelajaran" required><br>
-      <input type="hidden" id="editIndex">
-      <button type="submit" class="btn">Simpan PR</button>
-    </form>
-    <div id="daftarPR"></div>
-  </div>  <script>
-    let prList = JSON.parse(localStorage.getItem('prList')) || [];
+    <!-- PR Section -->
+    <div id="menu-pr">
+      <h2>Daftar PR</h2>
+      <form id="prForm">
+        <input type="text" id="judulPR" placeholder="Judul PR" required><br>
+        <input type="date" id="tanggalPR" required><br>
+        <input type="text" id="mapelPR" placeholder="Mata Pelajaran" required><br>
+        <input type="hidden" id="editIndex">
+        <button type="submit" class="btn">Simpan PR</button>
+      </form>
+      <div id="daftarPR"></div>
+    </div><!-- Jadwal Section -->
+<div id="menu-jadwal" class="hidden">
+  <h2>Jadwal Pelajaran</h2>
+  <form id="jadwalForm">
+    <input type="text" id="hariJadwal" placeholder="Hari" required><br>
+    <input type="text" id="isiJadwal" placeholder="Isi Jadwal" required><br>
+    <button type="submit" class="btn">Simpan Jadwal</button>
+  </form>
+  <div id="daftarJadwal"></div>
+</div>
 
-    function simpanPR() {
-      localStorage.setItem('prList', JSON.stringify(prList));
+<!-- Seragam Section -->
+<div id="menu-seragam" class="hidden">
+  <h2>Seragam</h2>
+  <form id="seragamForm">
+    <input type="text" id="hariSeragam" placeholder="Hari" required><br>
+    <input type="text" id="isiSeragam" placeholder="Isi Seragam" required><br>
+    <button type="submit" class="btn">Simpan Seragam</button>
+  </form>
+  <div id="daftarSeragam"></div>
+</div>
+
+<!-- Kegiatan Section -->
+<div id="menu-kegiatan" class="hidden">
+  <h2>Informasi Kegiatan</h2>
+  <form id="kegiatanForm">
+    <input type="date" id="tanggalKegiatan" required><br>
+    <input type="text" id="isiKegiatan" placeholder="Isi Kegiatan" required><br>
+    <button type="submit" class="btn">Simpan Kegiatan</button>
+  </form>
+  <div id="daftarKegiatan"></div>
+</div>
+
+  </div>  <div class="menu-bar">
+    <button onclick="tampilkanMenu('menu-pr')">PR</button>
+    <button onclick="tampilkanMenu('menu-jadwal')">Jadwal</button>
+    <button onclick="tampilkanMenu('menu-seragam')">Seragam</button>
+    <button onclick="tampilkanMenu('menu-kegiatan')">Kegiatan</button>
+  </div>  <script>
+    const prList = JSON.parse(localStorage.getItem('prList')) || [];
+    const jadwalList = JSON.parse(localStorage.getItem('jadwalList')) || [];
+    const seragamList = JSON.parse(localStorage.getItem('seragamList')) || [];
+    const kegiatanList = JSON.parse(localStorage.getItem('kegiatanList')) || [];
+
+    function simpanLocal(key, data) {
+      localStorage.setItem(key, JSON.stringify(data));
     }
 
+    function tampilkanMenu(id) {
+      document.querySelectorAll('.container > div').forEach(div => {
+        div.classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    // PR
     function renderPR() {
       const wrapper = document.getElementById('daftarPR');
       wrapper.innerHTML = '';
@@ -76,7 +142,7 @@
 
     function tandaiSelesai(index) {
       prList[index].selesai = true;
-      simpanPR();
+      simpanLocal('prList', prList);
       renderPR();
     }
 
@@ -102,11 +168,75 @@
         document.getElementById('editIndex').value = '';
       }
 
-      simpanPR();
+      simpanLocal('prList', prList);
       renderPR();
       this.reset();
     });
 
+    // Jadwal
+    function renderJadwal() {
+      const container = document.getElementById('daftarJadwal');
+      container.innerHTML = '';
+      jadwalList.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.textContent = `${item.hari}: ${item.isi}`;
+        container.appendChild(div);
+      });
+    }
+
+    document.getElementById('jadwalForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      jadwalList.push({ hari: this.hariJadwal.value, isi: this.isiJadwal.value });
+      simpanLocal('jadwalList', jadwalList);
+      renderJadwal();
+      this.reset();
+    });
+
+    // Seragam
+    function renderSeragam() {
+      const container = document.getElementById('daftarSeragam');
+      container.innerHTML = '';
+      seragamList.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.textContent = `${item.hari}: ${item.isi}`;
+        container.appendChild(div);
+      });
+    }
+
+    document.getElementById('seragamForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      seragamList.push({ hari: this.hariSeragam.value, isi: this.isiSeragam.value });
+      simpanLocal('seragamList', seragamList);
+      renderSeragam();
+      this.reset();
+    });
+
+    // Kegiatan
+    function renderKegiatan() {
+      const container = document.getElementById('daftarKegiatan');
+      container.innerHTML = '';
+      kegiatanList.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.textContent = `${item.tanggal}: ${item.isi}`;
+        container.appendChild(div);
+      });
+    }
+
+    document.getElementById('kegiatanForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      kegiatanList.push({ tanggal: this.tanggalKegiatan.value, isi: this.isiKegiatan.value });
+      simpanLocal('kegiatanList', kegiatanList);
+      renderKegiatan();
+      this.reset();
+    });
+
+    // Inisialisasi
     renderPR();
+    renderJadwal();
+    renderSeragam();
+    renderKegiatan();
   </script></body>
 </html>
