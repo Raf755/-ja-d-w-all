@@ -1,232 +1,276 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html><html lang="id">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aplikasi Pelajar</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background: #f2f2f2; }
-    header { background: #4CAF50; color: white; padding: 15px; text-align: center; }
-    .menu { position: fixed; bottom: 0; width: 100%; display: flex; background: #4CAF50; border-top: 1px solid #ccc; }
-    .menu button { flex: 1; padding: 15px; border: none; background: #4CAF50; color: white; font-weight: bold; font-size: 16px; }
-    .menu button.active { background-color: #388E3C; }
-    .container { padding: 15px; margin-bottom: 70px; }
-    .hidden { display: none; }
-    .tab h3 { color: #333; }
-    input[type="text"], input[type="password"], input[type="date"] {
-      width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box;
-      border: 1px solid #ccc; border-radius: 5px; font-size: 16px;
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
     }
-    button { padding: 10px 15px; background: #4CAF50; color: white; border: none; border-radius: 5px; margin-top: 5px; font-size: 16px; }
-    button:hover { background: #388E3C; cursor: pointer; }
-    .item { background: white; padding: 10px; margin: 10px 0; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .item small { color: gray; }/* Full screen login */
-#login-container {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to bottom right, #4CAF50, #81C784);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-#login-container input, #login-container button {
-  max-width: 300px;
-  width: 100%;
-}
-#login-container h2 {
-  color: white;
-  margin-bottom: 20px;
-}
-
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #f2f2f2;
+    }
+    .login-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #38b000, #70e000);
+      padding: 20px;
+    }
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+    input, button, select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #38b000;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #app {
+      display: none;
+      padding: 10px;
+    }
+    nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background-color: #38b000;
+      padding: 10px 0;
+    }
+    nav button {
+      flex: 1;
+      padding: 10px;
+      color: white;
+      background: none;
+      border: none;
+      font-weight: bold;
+    }
+    .section {
+      display: none;
+    }
+    .visible {
+      display: block;
+    }
+    .done {
+      text-decoration: line-through;
+      color: gray;
+    }
   </style>
 </head>
 <body>
-<div id="login-container">
-  <h2>Login</h2>
-  <input type="text" id="username" placeholder="Username"><br>
-  <input type="password" id="password" placeholder="Password"><br>
-  <button onclick="login()">Login</button>
-</div><div id="app" class="hidden">
-  <header>
-    <h1>Aplikasi Pelajar</h1>
-  </header>
-  <div class="container">
-    <div id="input" class="tab">
-      <h3>Tambah Jadwal</h3>
-      <input type="text" id="hari" placeholder="Hari">
-      <input type="text" id="pelajaran" placeholder="Pelajaran">
-      <button onclick="tambahJadwal()">Tambah</button><h3>Tambah PR</h3>
-  <input type="text" id="mapel-pr" placeholder="Mapel">
-  <input type="text" id="tugas" placeholder="Tugas">
-  <input type="date" id="tanggal-pr">
+  <div class="login-container" id="loginContainer">
+    <div class="login-box">
+      <h2 style="text-align:center;">Login Aplikasi</h2>
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="checkLogin()">Login</button>
+      <p id="loginError" style="color:red;text-align:center;display:none;">Username atau password salah</p>
+    </div>
+  </div>  <div id="app">
+    <div id="input" class="section visible">
+      <h3>Input Data</h3>
+      <input type="text" id="mapel" placeholder="Mata Pelajaran" />
+      <input type="text" id="hari" placeholder="Hari" />
+      <button onclick="tambahJadwal()">Tambah Jadwal</button><input type="text" id="judulPR" placeholder="Judul PR" />
+  <input type="date" id="tanggalPR" />
   <button onclick="tambahPR()">Tambah PR</button>
 
-  <h3>Input Seragam</h3>
-  <input type="text" id="hari-seragam" placeholder="Hari">
-  <input type="text" id="jenis-seragam" placeholder="Jenis Seragam">
+  <input type="text" id="hariSeragam" placeholder="Hari Seragam" />
+  <input type="text" id="jenisSeragam" placeholder="Jenis Seragam" />
   <button onclick="tambahSeragam()">Tambah Seragam</button>
 
-  <h3>Input Kegiatan</h3>
-  <input type="text" id="nama-kegiatan" placeholder="Nama Kegiatan">
-  <input type="date" id="tanggal-kegiatan">
+  <input type="text" id="judulKegiatan" placeholder="Judul Kegiatan" />
+  <input type="date" id="tanggalKegiatan" />
   <button onclick="tambahKegiatan()">Tambah Kegiatan</button>
 </div>
 
-<div id="jadwal" class="tab hidden">
+<div id="jadwal" class="section">
   <h3>Jadwal Pelajaran</h3>
-  <div id="jadwal-list"></div>
+  <ul id="daftarJadwal"></ul>
 </div>
 
-<div id="pr" class="tab hidden">
+<div id="pr" class="section">
   <h3>Daftar PR</h3>
-  <div id="pr-list"></div>
-  <h4>Rekap</h4>
-  <div id="rekap"></div>
+  <ul id="daftarPR"></ul>
 </div>
 
-<div id="seragam" class="tab hidden">
+<div id="seragam" class="section">
   <h3>Seragam</h3>
-  <div id="seragam-list"></div>
+  <ul id="daftarSeragam"></ul>
 </div>
 
-<div id="kegiatan" class="tab hidden">
-  <h3>Informasi Kegiatan</h3>
-  <div id="kegiatan-list"></div>
+<div id="kegiatan" class="section">
+  <h3>Kegiatan</h3>
+  <ul id="daftarKegiatan"></ul>
 </div>
 
-  </div>  <div class="menu">
-    <button onclick="bukaTab('input')" class="active">Input</button>
-    <button onclick="bukaTab('jadwal')">Jadwal</button>
-    <button onclick="bukaTab('pr')">PR</button>
-    <button onclick="bukaTab('seragam')">Seragam</button>
-    <button onclick="bukaTab('kegiatan')">Kegiatan</button>
-  </div>
-</div><script>
-const usernameBenar = "Rafkha";
-const passwordBenar = "Rafkha40";
+<div id="rekap" class="section">
+  <h3>Rekap PR</h3>
+  <p id="rekapText"></p>
+</div>
 
-function login() {
-  const u = document.getElementById("username").value;
-  const p = document.getElementById("password").value;
-  if (u === usernameBenar && p === passwordBenar) {
-    document.getElementById("login-container").classList.add("hidden");
-    document.getElementById("app").classList.remove("hidden");
-    tampilkanSemua();
-  } else {
-    alert("Login salah");
-  }
-}
+<nav>
+  <button onclick="showSection('input')">Input</button>
+  <button onclick="showSection('jadwal')">Jadwal</button>
+  <button onclick="showSection('pr')">PR</button>
+  <button onclick="showSection('seragam')">Seragam</button>
+  <button onclick="showSection('kegiatan')">Kegiatan</button>
+  <button onclick="showSection('rekap')">Rekap</button>
+</nav>
 
-function bukaTab(tab) {
-  document.querySelectorAll(".tab").forEach(t => t.classList.add("hidden"));
-  document.getElementById(tab).classList.remove("hidden");
-  document.querySelectorAll(".menu button").forEach(b => b.classList.remove("active"));
-  event.target.classList.add("active");
-}
+  </div>  <script>
+    function checkLogin() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      if (username === 'Rafkha' && password === 'Rafkha40') {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        loadSemua();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
 
-let jadwalList = JSON.parse(localStorage.getItem("jadwalList")) || [];
-let prList = JSON.parse(localStorage.getItem("prList")) || [];
-let seragamList = JSON.parse(localStorage.getItem("seragamList")) || [];
-let kegiatanList = JSON.parse(localStorage.getItem("kegiatanList")) || [];
-let rekap = JSON.parse(localStorage.getItem("rekap")) || { dikerjakan: 0, tidak: 0 };
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+      document.getElementById(id).classList.add('visible');
+    }
 
-function simpan() {
-  localStorage.setItem("jadwalList", JSON.stringify(jadwalList));
-  localStorage.setItem("prList", JSON.stringify(prList));
-  localStorage.setItem("seragamList", JSON.stringify(seragamList));
-  localStorage.setItem("kegiatanList", JSON.stringify(kegiatanList));
-  localStorage.setItem("rekap", JSON.stringify(rekap));
-}
+    function tambahJadwal() {
+      const mapel = document.getElementById('mapel').value;
+      const hari = document.getElementById('hari').value;
+      if (!mapel || !hari) return;
+      const data = JSON.parse(localStorage.getItem('jadwal') || '[]');
+      data.push({mapel, hari});
+      localStorage.setItem('jadwal', JSON.stringify(data));
+      document.getElementById('mapel').value = '';
+      document.getElementById('hari').value = '';
+      loadJadwal();
+    }
 
-function tambahJadwal() {
-  jadwalList.push({ hari: hari.value, pelajaran: pelajaran.value });
-  simpan(); tampilkanJadwal();
-}
+    function loadJadwal() {
+      const data = JSON.parse(localStorage.getItem('jadwal') || '[]');
+      const ul = document.getElementById('daftarJadwal');
+      ul.innerHTML = '';
+      data.forEach((item, i) => {
+        const li = document.createElement('li');
+        li.textContent = `${item.hari}: ${item.mapel}`;
+        ul.appendChild(li);
+      });
+    }
 
-function editJadwal(i) {
-  const j = jadwalList[i];
-  const hariBaru = prompt("Edit Hari", j.hari);
-  const pelajaranBaru = prompt("Edit Pelajaran", j.pelajaran);
-  if (hariBaru && pelajaranBaru) {
-    jadwalList[i] = { hari: hariBaru, pelajaran: pelajaranBaru };
-    simpan(); tampilkanJadwal();
-  }
-}
+    function tambahPR() {
+      const judul = document.getElementById('judulPR').value;
+      const tanggal = document.getElementById('tanggalPR').value;
+      if (!judul || !tanggal) return;
+      const data = JSON.parse(localStorage.getItem('pr') || '[]');
+      data.push({judul, tanggal, selesai: false});
+      localStorage.setItem('pr', JSON.stringify(data));
+      document.getElementById('judulPR').value = '';
+      document.getElementById('tanggalPR').value = '';
+      loadPR();
+    }
 
-function hapusJadwal(i) {
-  jadwalList.splice(i, 1);
-  simpan(); tampilkanJadwal();
-}
+    function loadPR() {
+      const data = JSON.parse(localStorage.getItem('pr') || '[]');
+      const now = new Date();
+      let selesai = 0, gagal = 0;
+      const ul = document.getElementById('daftarPR');
+      ul.innerHTML = '';
+      data
+        .filter(d => new Date(d.tanggal) >= now || d.selesai)
+        .sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal))
+        .forEach((item, i) => {
+          const li = document.createElement('li');
+          li.innerHTML = `${item.judul} - ${item.tanggal} ${item.selesai ? '<span class="done">(Sudah dikerjakan)</span>' : ''} <button onclick="centangPR(${i})">✔️</button>`;
+          ul.appendChild(li);
+        });
+      data.forEach(p => {
+        if (p.selesai) selesai++;
+        else if (new Date(p.tanggal) < now) gagal++;
+      });
+      document.getElementById('rekapText').innerText = `Dikerjakan: ${selesai} kali | Tidak dikerjakan: ${gagal} kali`;
+    }
 
-function tampilkanJadwal() {
-  const list = document.getElementById("jadwal-list");
-  list.innerHTML = "";
-  jadwalList.forEach((j, i) => {
-    list.innerHTML += `<div class='item'>${j.hari}: ${j.pelajaran}
-      <button onclick='editJadwal(${i})'>Edit</button>
-      <button onclick='hapusJadwal(${i})'>Hapus</button></div>`;
-  });
-}
+    function centangPR(index) {
+      const data = JSON.parse(localStorage.getItem('pr') || '[]');
+      data[index].selesai = true;
+      localStorage.setItem('pr', JSON.stringify(data));
+      loadPR();
+    }
 
-function tambahPR() {
-  prList.push({ mapel: mapel_pr.value, tugas: tugas.value, tanggal: tanggal_pr.value, selesai: false });
-  simpan(); tampilkanPR();
-}
+    function tambahSeragam() {
+      const hari = document.getElementById('hariSeragam').value;
+      const jenis = document.getElementById('jenisSeragam').value;
+      if (!hari || !jenis) return;
+      const data = JSON.parse(localStorage.getItem('seragam') || '[]');
+      data.push({hari, jenis});
+      localStorage.setItem('seragam', JSON.stringify(data));
+      document.getElementById('hariSeragam').value = '';
+      document.getElementById('jenisSeragam').value = '';
+      loadSeragam();
+    }
 
-function hapusPR(i) {
-  prList.splice(i, 1);
-  simpan(); tampilkanPR();
-}
+    function loadSeragam() {
+      const data = JSON.parse(localStorage.getItem('seragam') || '[]');
+      const ul = document.getElementById('daftarSeragam');
+      ul.innerHTML = '';
+      data.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = `${item.hari}: ${item.jenis}`;
+        ul.appendChild(li);
+      });
+    }
 
-function centangPR(i) {
-  if (!prList[i].selesai) rekap.dikerjakan++;
-  prList[i].selesai = true;
-  simpan(); tampilkanPR();
-}
+    function tambahKegiatan() {
+      const judul = document.getElementById('judulKegiatan').value;
+      const tanggal = document.getElementById('tanggalKegiatan').value;
+      if (!judul || !tanggal) return;
+      const data = JSON.parse(localStorage.getItem('kegiatan') || '[]');
+      data.push({judul, tanggal});
+      localStorage.setItem('kegiatan', JSON.stringify(data));
+      document.getElementById('judulKegiatan').value = '';
+      document.getElementById('tanggalKegiatan').value = '';
+      loadKegiatan();
+    }
 
-function tampilkanPR() {
-  const list = document.getElementById("pr-list");
-  list.innerHTML = "";
-  const today = new Date().toISOString().split("T")[0];
-  const sorted = prList.filter(p => p.tanggal >= today)
-    .sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
-  sorted.forEach((p, i) => {
-    const status = p.selesai ? "<strong>(Sudah dikerjakan)</strong>" : "";
-    list.innerHTML += `<div class='item'>${p.mapel}: ${p.tugas} ${status}<br><small>Deadline: ${p.tanggal}</small>
-      <button onclick='centangPR(${i})'>✓</button>
-      <button onclick='hapusPR(${i})'>Hapus</button></div>`;
-  });
-  document.getElementById("rekap").innerHTML = `✅ Dikerjakan: ${rekap.dikerjakan}`;
-}
+    function loadKegiatan() {
+      const data = JSON.parse(localStorage.getItem('kegiatan') || '[]');
+      const ul = document.getElementById('daftarKegiatan');
+      ul.innerHTML = '';
+      data.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = `${item.tanggal}: ${item.judul}`;
+        ul.appendChild(li);
+      });
+    }
 
-function tambahSeragam() {
-  seragamList.push({ hari: hari_seragam.value, jenis: jenis_seragam.value });
-  simpan(); tampilkanSeragam();
-}
-
-function tampilkanSeragam() {
-  const list = document.getElementById("seragam-list");
-  list.innerHTML = "";
-  seragamList.forEach(s => {
-    list.innerHTML += `<div class='item'>${s.hari}: ${s.jenis}</div>`;
-  });
-}
-
-function tambahKegiatan() {
-  kegiatanList.push({ nama: nama_kegiatan.value, tanggal: tanggal_kegiatan.value });
-  simpan(); tampilkanKegiatan();
-}
-
-function tampilkanKegiatan() {
-  const list = document.getElementById("kegiatan-list");
-  list.innerHTML = "";
-  kegiatanList.forEach(k => {
-    list.innerHTML += `<div class='item'>${k.tanggal}: ${k.nama}</div>`;
-  });
-}
-
-function tampilkanSemua() {
-  tampilkanJadwal(); tampilkanPR(); tampilkanSeragam(); tampilkanKegiatan();
-}
-</script></body>
+    function loadSemua() {
+      loadJadwal();
+      loadPR();
+      loadSeragam();
+      loadKegiatan();
+    }
+  </script></body>
 </html>
