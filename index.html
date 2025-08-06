@@ -1,4 +1,4 @@
-<!-- Kode lengkap aplikasi sudah termasuk login, PR, jadwal pelajaran, seragam, kegiatan, dan rekap PR --><!-- Update: Tambah mata pelajaran di PR, isi kegiatan, edit PR, dan hapus PR --><!DOCTYPE html><html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,94 +32,83 @@
     .danger {
       background-color: red;
     }
+    .menu {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #fff;
+      display: flex;
+      justify-content: space-around;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+    }
+    .menu button {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      background: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #loginScreen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #loginScreen form {
+      width: 90%;
+      max-width: 400px;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      border-radius: 10px;
+    }
+    #loginScreen input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Daftar PR</h2>
-    <form id="prForm">
-      <input type="text" id="judulPR" placeholder="Judul PR" required><br>
-      <input type="date" id="tanggalPR" required><br>
-      <input type="text" id="mapelPR" placeholder="Mata Pelajaran" required><br>
-      <input type="hidden" id="editIndex">
-      <button type="submit" class="btn">Simpan PR</button>
-    </form>
-    <div id="daftarPR"></div>
-  </div>  <script>
-    let prList = JSON.parse(localStorage.getItem('prList')) || [];
+<div id="loginScreen">
+  <form onsubmit="return login(event)">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit" class="btn">Login</button>
+  </form>
+</div>
+<div class="container">
+  <div id="content"></div>
+</div>
+<div class="menu">
+  <button onclick="showMenu('input')">Input</button>
+  <button onclick="showMenu('pr')">PR</button>
+  <button onclick="showMenu('jadwal')">Jadwal</button>
+  <button onclick="showMenu('seragam')">Seragam</button>
+  <button onclick="showMenu('kegiatan')">Kegiatan</button>
+</div>
+<script>
+let prList = JSON.parse(localStorage.getItem('prList')) || [];
+let jadwalList = JSON.parse(localStorage.getItem('jadwalList')) || [];
+let seragamList = JSON.parse(localStorage.getItem('seragamList')) || [];
+kegiatanList = JSON.parse(localStorage.getItem('kegiatanList')) || [];function simpanSemua() { localStorage.setItem('prList', JSON.stringify(prList)); localStorage.setItem('jadwalList', JSON.stringify(jadwalList)); localStorage.setItem('seragamList', JSON.stringify(seragamList)); localStorage.setItem('kegiatanList', JSON.stringify(kegiatanList)); }
 
-    function simpanLocal(kunci, data) {
-      localStorage.setItem(kunci, JSON.stringify(data));
-    }
+function login(e) { e.preventDefault(); const u = document.getElementById('username').value; const p = document.getElementById('password').value; if (u === 'Rafkha' && p === 'Rafkha40') { document.getElementById('loginScreen').style.display = 'none'; } else { alert('Login gagal'); } }
 
-    function simpanPR() {
-      simpanLocal('prList', prList);
-    }
+function showMenu(menu) { const c = document.getElementById('content'); if (menu === 'input') { c.innerHTML =  <h2>Input Data</h2> <form onsubmit="simpanPR(event)"> <input type="text" id="judulPR" placeholder="Judul PR" required><br> <input type="date" id="tanggalPR" required><br> <input type="text" id="mapelPR" placeholder="Mata Pelajaran" required><br> <button class="btn">Simpan PR</button> </form><br> <form onsubmit="simpanJadwal(event)"> <input type="text" id="hariJadwal" placeholder="Hari Jadwal" required><br> <input type="text" id="mapelJadwal" placeholder="Mata Pelajaran" required><br> <button class="btn">Simpan Jadwal</button> </form><br> <form onsubmit="simpanSeragam(event)"> <input type="text" id="hariSeragam" placeholder="Hari Seragam" required><br> <input type="text" id="warnaSeragam" placeholder="Warna Seragam" required><br> <button class="btn">Simpan Seragam</button> </form><br> <form onsubmit="simpanKegiatan(event)"> <input type="text" id="tanggalKegiatan" placeholder="Tanggal Kegiatan" required><br> <input type="text" id="isiKegiatan" placeholder="Isi Kegiatan" required><br> <button class="btn">Simpan Kegiatan</button> </form>; } else if (menu === 'pr') { renderPR(); } else if (menu === 'jadwal') { c.innerHTML = '<h2>Jadwal</h2>' + jadwalList.map(j => <div class='card'>${j.hari} - ${j.mapel}</div>).join(''); } else if (menu === 'seragam') { c.innerHTML = '<h2>Seragam</h2>' + seragamList.map(s => <div class='card'>${s.hari} - ${s.warna}</div>).join(''); } else if (menu === 'kegiatan') { c.innerHTML = '<h2>Kegiatan</h2>' + kegiatanList.map(k => <div class='card'>${k.tanggal} - ${k.isi}</div>).join(''); } }
 
-    function renderPR() {
-      const wrapper = document.getElementById('daftarPR');
-      wrapper.innerHTML = '';
-      const now = new Date();
-      prList
-        .filter(pr => new Date(pr.tanggal) >= now)
-        .sort((a,b) => new Date(a.tanggal) - new Date(b.tanggal))
-        .forEach((pr, index) => {
-          const div = document.createElement('div');
-          div.className = 'card';
-          div.innerHTML = `
-            <strong>${pr.judul}</strong><br>
-            Mata Pelajaran: ${pr.mapel}<br>
-            Tanggal: ${pr.tanggal}<br>
-            Status: ${pr.selesai ? '<span style="color:green;">Sudah dikerjakan</span>' : 'Belum'}<br>
-            <button onclick="tandaiSelesai(${index})" class="btn">Centang</button>
-            <button onclick="editPR(${index})" class="btn">Edit</button>
-            <button onclick="hapusPR(${index})" class="btn" style="background-color: #d00000;">Hapus</button>
-          `;
-          wrapper.appendChild(div);
-        });
-    }
+function simpanPR(e) { e.preventDefault(); const judul = document.getElementById('judulPR').value; const tanggal = document.getElementById('tanggalPR').value; const mapel = document.getElementById('mapelPR').value; prList.push({judul, tanggal, mapel, selesai: false}); simpanSemua(); alert('PR disimpan'); e.target.reset(); }
 
-    function tandaiSelesai(index) {
-      prList[index].selesai = true;
-      simpanPR();
-      renderPR();
-    }
+function renderPR() { const now = new Date(); const c = document.getElementById('content'); c.innerHTML = '<h2>Daftar PR</h2>' + prList .filter(pr => new Date(pr.tanggal) >= now) .sort((a,b) => new Date(a.tanggal) - new Date(b.tanggal)) .map((pr, i) =>  <div class="card"> <strong>${pr.judul}</strong><br> Mata Pelajaran: ${pr.mapel}<br> Tanggal: ${pr.tanggal}<br> Status: ${pr.selesai ? '<span style="color:green">Sudah dikerjakan</span>' : 'Belum'}<br> <button onclick="tandaiSelesai(${i})" class="btn">Centang</button> </div>).join(''); }
 
-    function editPR(index) {
-      const pr = prList[index];
-      document.getElementById('judulPR').value = pr.judul;
-      document.getElementById('tanggalPR').value = pr.tanggal;
-      document.getElementById('mapelPR').value = pr.mapel;
-      document.getElementById('editIndex').value = index;
-    }
+function tandaiSelesai(i) { prList[i].selesai = true; simpanSemua(); renderPR(); }
 
-    function hapusPR(index) {
-      if (confirm("Yakin ingin menghapus PR ini?")) {
-        prList.splice(index, 1);
-        simpanPR();
-        renderPR();
-      }
-    }
+function simpanJadwal(e) { e.preventDefault(); const hari = document.getElementById('hariJadwal').value; const mapel = document.getElementById('mapelJadwal').value; jadwalList.push({hari, mapel}); simpanSemua(); alert('Jadwal disimpan'); e.target.reset(); } function simpanSeragam(e) { e.preventDefault(); const hari = document.getElementById('hariSeragam').value; const warna = document.getElementById('warnaSeragam').value; seragamList.push({hari, warna}); simpanSemua(); alert('Seragam disimpan'); e.target.reset(); } function simpanKegiatan(e) { e.preventDefault(); const tanggal = document.getElementById('tanggalKegiatan').value; const isi = document.getElementById('isiKegiatan').value; kegiatanList.push({tanggal, isi}); simpanSemua(); alert('Kegiatan disimpan'); e.target.reset(); } </script>
 
-    document.getElementById('prForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const judul = document.getElementById('judulPR').value;
-      const tanggal = document.getElementById('tanggalPR').value;
-      const mapel = document.getElementById('mapelPR').value;
-      const index = document.getElementById('editIndex').value;
-
-      if (index === '') {
-        prList.push({judul, tanggal, mapel, selesai: false});
-      } else {
-        prList[index] = {...prList[index], judul, tanggal, mapel};
-        document.getElementById('editIndex').value = '';
-      }
-
-      simpanPR();
-      renderPR();
-      this.reset();
-    });
-
-    renderPR();
-  </script></body>
+</body>
 </html>
